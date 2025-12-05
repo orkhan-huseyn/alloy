@@ -35,6 +35,14 @@ const (
 	ExplainPlanJoinAlgorithmNestedLoop ExplainPlanJoinAlgorithm = "nested_loop"
 )
 
+type ExplainProcessingResult string
+
+const (
+	ExplainProcessingResultSuccess ExplainProcessingResult = "success"
+	ExplainProcessingResultError   ExplainProcessingResult = "error"
+	ExplainProcessingResultSkipped ExplainProcessingResult = "skipped"
+)
+
 type ExplainReservedWordMetadata struct {
 	ExemptionPrefixes *[]string
 }
@@ -63,10 +71,11 @@ var ExplainReservedWordDenyList = map[string]ExplainReservedWordMetadata{
 	"TRUNCATE": {},
 
 	// Transaction control that can commit writes
-	"BEGIN":     {},
-	"COMMIT":    {},
-	"ROLLBACK":  {},
-	"SAVEPOINT": {},
+	"BEGIN":       {},
+	"COMMIT":      {},
+	"ROLLBACK":    {},
+	"SAVEPOINT":   {},
+	"TRANSACTION": {},
 
 	// Database/Schema management
 	"USE":      {},
@@ -120,6 +129,9 @@ type ExplainPlanMetadataInfo struct {
 	DatabaseVersion string `json:"databaseVersion"`
 	QueryIdentifier string `json:"queryIdentifier"`
 	GeneratedAt     string `json:"generatedAt"`
+
+	ProcessingResult       ExplainProcessingResult `json:"processingResult"`
+	ProcessingResultReason string                  `json:"processingResultReason"`
 }
 
 type ExplainPlanNode struct {
